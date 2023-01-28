@@ -2,11 +2,17 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"github.com/rs/zerolog"
 	"os"
+	"runtime"
 
 	"github.com/alexpts/edu-go/cmd/api/di"
+	"github.com/valyala/fasthttp"
 )
+
+func IndexHandler(ctx *fasthttp.RequestCtx) {
+	ctx.WriteString("Welcome!")
+}
 
 func main() {
 	ctx := context.Background()
@@ -16,14 +22,19 @@ func main() {
 }
 
 func run(ctx context.Context) (exitCode int) {
-	a, cleanUp, err := di.InjectA()
-	defer cleanUp()
+	logger := di.InjectApiLogger()
+	logOnStart(&logger)
 
-	if err != nil {
-		return 1
-	}
-
-	fmt.Println(a.Name)
+	server := di.InjectHttpServer(IndexHandler)
+	_ = server.ListenAndServe(":3000")
 
 	return 0
+}
+
+func logOnStart(logger *zerolog.Logger) {
+	logger.Info().Dict("process", zerolog.Dict().
+		Int("pid", os.Getpid()).
+		Int("count_cpu", runtime.NumCPU()).
+		Str("go_ver", runtime.Version()[2:]),
+	).Msg("start service...")
 }

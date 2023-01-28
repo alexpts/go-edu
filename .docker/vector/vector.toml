@@ -1,0 +1,54 @@
+# ключ поля с датой, если не передан, то vector создат такое поле сам и текущую дату подставит
+log_schema.timestamp_key = "ts"
+log_schema.message_key = "message"
+log_schema.source_type_key = "src"
+
+# web gui
+[api]
+  enabled = false
+  #address = "0.0.0.0:8686"
+
+# Описыват точку входа для логов
+# https://vector.dev/docs/reference/configuration/sources/socket/
+[sources.udp_socket]
+  type = "socket"
+  address = "0.0.0.0:12201"
+  mode = "udp"
+  port_key = "" # skip extra data to event log
+  decoding.codec = 'bytes' # json перекрывате поля в корне, парсим явно
+
+# transforms pipe, который берет из sources канала данные
+[transforms.json_parser]
+  inputs = ["udp_socket"]
+  type = "remap"
+  drop_on_abort = true
+  drop_on_error = true
+  reroute_dropped = true
+  file = "/etc/vector/remap-log.vrl"
+
+# выход
+[sinks.es]
+  inputs = ["json_parser"]
+  type = "elasticsearch"
+  mode = "bulk"
+  acknowledgements.enabled = true
+  bulk.index = "vector-{{ _vector._es_index }}-%Y.%m.%d" # https://docs.rs/chrono/0.4.19/chrono/format/strftime/index.html#specifiers
+  #index = "{{ _es_index }}"
+  #endpoints = "${ES_HOST}"  # указывается с протоколом и портом
+  endpoints = ["http://elasticsearch:9200"]
+  compression = "gzip"
+  #auth.strategy = "basic"
+  #auth.password = "${ES_PASS}"
+  #auth.user = "${ES_LOGIN}"
+  batch.timeout_secs = 5
+  encoding.except_fields = ["_vector._es_index", "_vector.host"]
+
+[sinks.console]
+  type = "console" # required
+  inputs =  [
+    #"udp_socket",
+    "json_parser",
+    "json_parser.dropped" # reroute from {{ name }}.dropped
+  ]
+  target = "stdout"
+  encoding.codec = "json"

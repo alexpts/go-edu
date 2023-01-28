@@ -1,0 +1,35 @@
+services:
+  vector:
+    image: timberio/vector:0.27.X-alpine
+    mem_limit: 64m
+    restart: always
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ./vector/vector.toml:/etc/vector/vector.toml:ro
+      - ./vector/remap-log.vrl:/etc/vector/remap-log.vrl:ro
+    ports: [ '127.0.0.1:12201:12201/udp' ]
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.1
+    mem_limit: 1024m
+    ports: [ '127.0.0.1:9200:9200' ]
+    environment:
+      ES_JAVA_OPTS: -Xms256m -Xmx256m
+      discovery.type: single-node
+      xpack.security.enabled: false
+      #ELASTIC_USERNAME: "elastic"
+      #ELASTIC_PASSWORD: "123456"
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.6.1
+    mem_limit: 512m
+    ports: [ '127.0.0.1:5601:5601' ]
+    depends_on:
+      - elasticsearch
+    environment:
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+      - ES_HOST=elasticsearch:9200
+      - XPACK_MONITORING_ENABLED=false
+      - XPACK_MONITORING_COLLECTION_ENABLED=false
+      - XPACK_SECURITY_ENABLED=false

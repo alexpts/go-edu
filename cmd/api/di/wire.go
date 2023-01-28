@@ -4,21 +4,26 @@
 package di
 
 import (
+	"github.com/alexpts/edu-go/internal/provider"
 	"github.com/google/wire"
+	"github.com/rs/zerolog"
+	"github.com/valyala/fasthttp"
 )
 
-type A struct {
-	Name string
+//var miscSet = wire.NewSet(
+//	provider.ProviderZeroLogger,
+//)
+
+func InjectHttpServer(handler fasthttp.RequestHandler) fasthttp.Server {
+	wire.Build(provider.ProvideHttpServer)
+	return fasthttp.Server{}
 }
 
-func provideA() (A, func()) {
-	return A{"Alex"}, func() {}
+func InjectLogger() zerolog.Logger {
+	panic(wire.Build(provider.ProvideZeroLogger))
 }
 
-func InjectA() (A, func(), error) {
-	wire.Build(
-		provideA,
-	)
-
-	return A{}, nil, nil
+func InjectApiLogger() zerolog.Logger {
+	logger := provider.ProvideZeroLogger()
+	return logger.With().Str("app", "api").Logger()
 }

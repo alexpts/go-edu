@@ -6,21 +6,27 @@
 
 package di
 
+import (
+	"github.com/alexpts/edu-go/internal/provider"
+	"github.com/rs/zerolog"
+	"github.com/valyala/fasthttp"
+)
+
 // Injectors from wire.go:
 
-func InjectA() (A, func(), error) {
-	a, cleanup := provideA()
-	return a, func() {
-		cleanup()
-	}, nil
+func InjectHttpServer(handler fasthttp.RequestHandler) fasthttp.Server {
+	server := provider.ProvideHttpServer(handler)
+	return server
+}
+
+func InjectLogger() zerolog.Logger {
+	logger := provider.ProvideZeroLogger()
+	return logger
 }
 
 // wire.go:
 
-type A struct {
-	Name string
-}
-
-func provideA() (A, func()) {
-	return A{"Alex"}, func() {}
+func InjectApiLogger() zerolog.Logger {
+	logger := provider.ProvideZeroLogger()
+	return logger.With().Str("app", "api").Logger()
 }

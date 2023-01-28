@@ -1,0 +1,15 @@
+# https://vector.dev/docs/reference/vrl/
+
+json = object!(parse_json!(.message, 2)) # парсим json лог в переменную, в глубину на 2 уровня только
+del(.message) # удаляем поле с json строкой сырой
+
+# определяем индекс для ES из свойства `app`
+._es_index = json.app || string(value: "vector-app")
+
+# создаем объект лога из parsed_json, merge технические поля лог коллектора _vector: {...}
+. = merge(
+    json,
+    {
+      "_vector": object(.)
+    }
+)
