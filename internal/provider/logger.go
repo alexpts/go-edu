@@ -38,7 +38,7 @@ func (h zeroLogLevelHook) Run(e *zerolog.Event, level zerolog.Level, msg string)
 	e.Int("sl_level", value)
 }
 
-func ProvideZeroLogger() zerolog.Logger {
+func ProvideZeroLogger() *zerolog.Logger {
 	zerolog.TimeFieldFormat = MicroSec
 	zerolog.SetGlobalLevel(zerolog.TraceLevel)
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack // error must implement `StackTrace() errors.StackTrace`
@@ -74,5 +74,5 @@ func ProvideZeroLogger() zerolog.Logger {
 		Logger()
 
 	//logger = logger.Hook(zeroLogLevelHook{})
-	return logger
+	return &logger
 }

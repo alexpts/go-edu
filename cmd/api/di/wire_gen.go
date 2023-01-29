@@ -7,7 +7,10 @@
 package di
 
 import (
+	"github.com/alexpts/edu-go/internal/controller"
+	panic2 "github.com/alexpts/edu-go/internal/middleware/panic"
 	"github.com/alexpts/edu-go/internal/provider"
+	"github.com/alexpts/go-next/next"
 	"github.com/rs/zerolog"
 	"github.com/valyala/fasthttp"
 )
@@ -19,14 +22,34 @@ func InjectHttpServer(handler fasthttp.RequestHandler) fasthttp.Server {
 	return server
 }
 
-func InjectLogger() zerolog.Logger {
+func InjectApp() next.App {
+	logger := provider.ProvideZeroLogger()
+	controllerHome := controller.Home{
+		Logger: logger,
+	}
+	controllerNotFound := _wireControllerNotFoundValue
+	middlewarePanic := panic2.ProvideMiddlewarePanic(logger)
+	v := provider.ProvideNextLayers(controllerHome, controllerNotFound, middlewarePanic)
+	app := provider.ProvideNextApp(v)
+	return app
+}
+
+var (
+	_wireControllerNotFoundValue = controller.NotFound{
+		Payload: []byte(`{"error": "not found"}`),
+	}
+)
+
+func InjectLogger() *zerolog.Logger {
 	logger := provider.ProvideZeroLogger()
 	return logger
 }
 
 // wire.go:
 
-func InjectApiLogger() zerolog.Logger {
-	logger := provider.ProvideZeroLogger()
-	return logger.With().Str("app", "api").Logger()
+func InjectApiLogger() *zerolog.Logger {
+	logger := provider.ProvideZeroLogger().
+		With().Str("app", "api").Logger()
+
+	return &logger
 }
