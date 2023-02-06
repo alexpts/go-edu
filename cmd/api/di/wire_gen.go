@@ -22,7 +22,7 @@ func InjectHttpServer(handler fasthttp.RequestHandler) fasthttp.Server {
 	return server
 }
 
-func InjectApp() next.App {
+func InjectApp() next.MicroApp {
 	logger := provider.ProvideZeroLogger()
 	controllerHome := controller.Home{
 		Logger: logger,
@@ -30,8 +30,8 @@ func InjectApp() next.App {
 	controllerNotFound := _wireControllerNotFoundValue
 	middlewarePanic := panic2.ProvideMiddlewarePanic(logger)
 	v := provider.ProvideNextLayers(controllerHome, controllerNotFound, middlewarePanic)
-	app := provider.ProvideNextApp(v)
-	return app
+	microApp := provider.ProvideNextApp(v)
+	return microApp
 }
 
 var (

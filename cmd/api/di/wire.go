@@ -22,7 +22,7 @@ func InjectHttpServer(handler fasthttp.RequestHandler) fasthttp.Server {
 	return fasthttp.Server{}
 }
 
-func InjectApp() next.App {
+func InjectApp() next.MicroApp {
 	wire.Build(
 		// controllers
 		wire.Struct(new(controller.Home), "Logger"),
@@ -36,7 +36,7 @@ func InjectApp() next.App {
 		provider.ProvideNextApp,
 	)
 
-	return next.App{}
+	return next.MicroApp{}
 }
 
 func InjectLogger() *zerolog.Logger {

@@ -8,7 +8,7 @@ func main() {
 	logger := di.InjectApiLogger()
 
 	app := di.InjectApp()
-	server := di.InjectHttpServer(app.FasthttpHandler)
+	server := di.InjectHttpServer(app.FastHttpHandler)
 	err := server.ListenAndServe(":3000")
 
 	if err != nil {

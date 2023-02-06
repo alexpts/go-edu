@@ -3,11 +3,11 @@ package provider
 import (
 	"github.com/alexpts/edu-go/internal/controller"
 	"github.com/alexpts/edu-go/internal/middleware"
-	"github.com/alexpts/go-next/next"
+	"github.com/alexpts/go-next/next/layer"
 )
 
 // m - multi handler wrapper for decomposition
-func m(handlers ...next.Handler) []next.Handler {
+func m(handlers ...layer.Handler) []layer.Handler {
 	return handlers
 }
 
@@ -15,8 +15,8 @@ func ProvideNextLayers(
 	homeController controller.Home,
 	notFoundController controller.NotFound,
 	panicMiddleware middleware.PanicMiddleware,
-) []next.Layer {
-	return []next.Layer{
+) []layer.Layer {
+	return []layer.Layer{
 		{
 			Name:     `main-page`,
 			Path:     `/`,
@@ -25,7 +25,7 @@ func ProvideNextLayers(
 		{
 			Name:     `panic-to-response`,
 			Handlers: m(panicMiddleware.Middleware),
-			Priority: -1000,
+			Priority: 1000,
 		},
 		{
 			Name:     `otherwise`,

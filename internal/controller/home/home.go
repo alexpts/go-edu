@@ -2,7 +2,7 @@ package home
 
 import (
 	"encoding/json"
-	"github.com/alexpts/go-next/next"
+	"github.com/alexpts/go-next/next/layer"
 	"github.com/rs/zerolog"
 )
 
@@ -17,16 +17,14 @@ type User struct {
 
 // @todo need Response less syntax
 
-func (c *ControllerHome) ActionIndex(ctx *next.HandlerCxt) {
-
+func (c *ControllerHome) ActionIndex(ctx *layer.HandlerCtx) {
 	user := User{Name: "alex", Lastname: "some"}
 
 	ctx.Response.Header.Add("content-type", "application/json")
 	respBytes, err := json.Marshal(user)
 
 	if err != nil {
-		ctx.Panic(err, map[string]interface{}{})
-		return
+		panic(err)
 	}
 
 	ctx.Response.SetStatusCode(200)

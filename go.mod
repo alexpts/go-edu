@@ -5,7 +5,7 @@ go 1.19
 require github.com/google/wire v0.5.1-0.20220620021424-0675cdc9191c // main branch
 
 require (
-	github.com/alexpts/go-next v0.0.0-20230121114252-a22e3e53951e
+	github.com/alexpts/go-next v0.0.0-20230205194722-cd00165c55b6
 	github.com/rs/zerolog v1.29.0
 	github.com/valyala/fasthttp v1.44.0
 )

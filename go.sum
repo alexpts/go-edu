@@ -1,5 +1,5 @@
-github.com/alexpts/go-next v0.0.0-20230121114252-a22e3e53951e h1:EhTE1BcY0+22odzC+Skoe6/wpTNVfcBZBhSYjVy6NAY=
-github.com/alexpts/go-next v0.0.0-20230121114252-a22e3e53951e/go.mod h1:e8XqUSBmCUVQRruqFx1q6mxiMtqRcXyb1SEg9FPfbLw=
+github.com/alexpts/go-next v0.0.0-20230205194722-cd00165c55b6 h1:7iPs6hz5n9jUFDXIJgryebwWD9xCQgoelvsSig6EbZc=
+github.com/alexpts/go-next v0.0.0-20230205194722-cd00165c55b6/go.mod h1:e8XqUSBmCUVQRruqFx1q6mxiMtqRcXyb1SEg9FPfbLw=
 github.com/andybalholm/brotli v1.0.4 h1:V7DdXeJtZscaqfNuAdSRuRFzuiKlHSC/Zh3zl9qY3JY=
 github.com/andybalholm/brotli v1.0.4/go.mod h1:fO7iG3H7G2nSZ7m0zPUDn85XEX2GTukHGRSepvi9Eig=
 github.com/coreos/go-systemd/v22 v22.3.3-0.20220203105225-a9a7ef127534/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=
