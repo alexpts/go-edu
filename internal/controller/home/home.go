@@ -2,27 +2,29 @@ package home
 
 import (
 	"encoding/json"
+	"github.com/alexpts/edu-go/internal/repo"
 	"github.com/alexpts/go-next/next/layer"
 	"github.com/rs/zerolog"
 )
 
 type ControllerHome struct {
-	Logger *zerolog.Logger
-}
-
-type User struct {
-	Name     string `json:"name"`
-	Lastname string `json:"lastname"`
+	Logger   *zerolog.Logger
+	PostRepo *repo.Post
 }
 
 // @todo need Response less syntax
 
 func (c *ControllerHome) ActionIndex(ctx *layer.HandlerCtx) {
-	user := User{Name: "alex", Lastname: "some"}
+	post := c.PostRepo.FindById(2)
+	ctx.Response.Header.Add("content-type", "application/json") // @todo move to middleware for API application
 
-	ctx.Response.Header.Add("content-type", "application/json")
-	respBytes, err := json.Marshal(user)
+	if post == nil {
+		ctx.Response.SetStatusCode(404)
+		ctx.Response.AppendBodyString(`{"error": "not found""}`)
+		return
+	}
 
+	respBytes, err := json.Marshal(post)
 	if err != nil {
 		panic(err)
 	}

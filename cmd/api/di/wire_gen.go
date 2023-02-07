@@ -10,6 +10,7 @@ import (
 	"github.com/alexpts/edu-go/internal/controller"
 	panic2 "github.com/alexpts/edu-go/internal/middleware/panic"
 	"github.com/alexpts/edu-go/internal/provider"
+	"github.com/alexpts/edu-go/internal/repo"
 	"github.com/alexpts/go-next/next"
 	"github.com/rs/zerolog"
 	"github.com/valyala/fasthttp"
@@ -22,16 +23,29 @@ func InjectHttpServer(handler fasthttp.RequestHandler) fasthttp.Server {
 	return server
 }
 
-func InjectApp() next.MicroApp {
+func InjectApp() (next.MicroApp, error) {
 	logger := provider.ProvideZeroLogger()
+	viper := provider.ProvideConfig()
+	db, err := provider.ProvideDbConnect(viper)
+	if err != nil {
+		return next.MicroApp{}, err
+	}
+	gormDB, err := provider.ProvideGormDb(db)
+	if err != nil {
+		return next.MicroApp{}, err
+	}
+	postRepo := &repo.Post{
+		Db: gormDB,
+	}
 	controllerHome := controller.Home{
-		Logger: logger,
+		Logger:   logger,
+		PostRepo: postRepo,
 	}
 	controllerNotFound := _wireControllerNotFoundValue
 	middlewarePanic := panic2.ProvideMiddlewarePanic(logger)
 	v := provider.ProvideNextLayers(controllerHome, controllerNotFound, middlewarePanic)
 	microApp := provider.ProvideNextApp(v)
-	return microApp
+	return microApp, nil
 }
 
 var (
