@@ -11,7 +11,18 @@ type Repo struct {
 
 func (repo *Repo) FindById(id int) *model.Post {
 	post := new(model.Post)
-	tx := repo.Db.Take(post, id)
+	tx := repo.Db.InnerJoins("Cat").Select("*").Take(post, id)
+
+	if tx.RowsAffected == 0 {
+		return nil
+	}
+
+	return post
+}
+
+func (repo *Repo) FindShortPostById(id int) *model.ShortPost {
+	post := new(model.ShortPost)
+	tx := repo.Db.InnerJoins("Cat").Take(post, id)
 
 	if tx.RowsAffected == 0 {
 		return nil
