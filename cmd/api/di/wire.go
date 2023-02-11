@@ -14,9 +14,23 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-//var miscSet = wire.NewSet(
-//	provider.ProviderZeroLogger,
-//)
+var repoSet = wire.NewSet(
+	wire.Struct(new(repo.Post), "Db"),
+	wire.Struct(new(repo.User), "Db"),
+)
+
+var controllerSet = wire.NewSet(
+	wire.Value(controller.NotFound{
+		Payload: []byte(`{"error": "not found"}`),
+	}),
+	wire.Struct(new(controller.Home), "*"),
+	wire.Struct(new(controller.User), "*"),
+	wire.Struct(new(controller.Post), "*"),
+)
+
+var middlewareSet = wire.NewSet(
+	middleware.ProvideMiddlewarePanic,
+)
 
 func InjectHttpServer(handler fasthttp.RequestHandler) fasthttp.Server {
 	wire.Build(provider.ProvideHttpServer)
@@ -25,21 +39,17 @@ func InjectHttpServer(handler fasthttp.RequestHandler) fasthttp.Server {
 
 func InjectApp() (next.MicroApp, error) {
 	wire.Build(
-		// controllers
-		wire.Struct(new(controller.Home), "Logger", "PostRepo"),
-		wire.Value(controller.NotFound{
-			Payload: []byte(`{"error": "not found"}`),
-		}),
-		middleware.ProvideMiddlewarePanic,
+		repoSet,
+		controllerSet,
+		middlewareSet,
 
+		// other
 		provider.ProvideConfig,
 		provider.ProvideZeroLogger,
 		provider.ProvideNextLayers,
 		provider.ProvideNextApp,
 		provider.ProvideDbConnect,
 		provider.ProvideGormDb,
-
-		wire.Struct(new(repo.Post), "Db"),
 	)
 
 	return next.MicroApp{}, nil

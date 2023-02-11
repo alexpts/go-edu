@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/alexpts/edu-go/cmd/api/di"
 	"github.com/spf13/viper"
+
+	"github.com/alexpts/edu-go/cmd/api/di"
 )
 
 func main() {

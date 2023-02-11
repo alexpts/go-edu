@@ -12,7 +12,9 @@ func m(handlers ...layer.Handler) []layer.Handler {
 }
 
 func ProvideNextLayers(
-	homeController controller.Home,
+	home controller.Home,
+	user controller.User,
+	post controller.Post,
 	notFoundController controller.NotFound,
 	panicMiddleware middleware.PanicMiddleware,
 ) []layer.Layer {
@@ -20,7 +22,27 @@ func ProvideNextLayers(
 		{
 			Name:     `main-page`,
 			Path:     `/`,
-			Handlers: m(homeController.ActionIndex),
+			Handlers: m(home.ActionPost),
+		},
+		{
+			Name:     `user-by-id`,
+			Path:     `/users/{id:\d+}/`,
+			Handlers: m(user.ActionGet),
+		},
+		{
+			Name:     `users`,
+			Path:     `/users/`,
+			Handlers: m(user.ActionFind),
+		},
+		{
+			Name:     `post-by-id`,
+			Path:     `/posts/{id:\d+}/`,
+			Handlers: m(post.ActionGet),
+		},
+		{
+			Name:     `posts`,
+			Path:     `/posts/`,
+			Handlers: m(post.ActionFind),
 		},
 		{
 			Name:     `panic-to-response`,

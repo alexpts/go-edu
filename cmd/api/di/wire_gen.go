@@ -8,10 +8,12 @@ package di
 
 import (
 	"github.com/alexpts/edu-go/internal/controller"
+	"github.com/alexpts/edu-go/internal/middleware"
 	panic2 "github.com/alexpts/edu-go/internal/middleware/panic"
 	"github.com/alexpts/edu-go/internal/provider"
 	"github.com/alexpts/edu-go/internal/repo"
 	"github.com/alexpts/go-next/next"
+	"github.com/google/wire"
 	"github.com/rs/zerolog"
 	"github.com/valyala/fasthttp"
 )
@@ -25,6 +27,9 @@ func InjectHttpServer(handler fasthttp.RequestHandler) fasthttp.Server {
 
 func InjectApp() (next.MicroApp, error) {
 	logger := provider.ProvideZeroLogger()
+	home := controller.Home{
+		Logger: logger,
+	}
 	viper := provider.ProvideConfig()
 	db, err := provider.ProvideDbConnect(viper)
 	if err != nil {
@@ -34,22 +39,29 @@ func InjectApp() (next.MicroApp, error) {
 	if err != nil {
 		return next.MicroApp{}, err
 	}
-	postRepo := &repo.Post{
+	user := &repo.User{
 		Db: gormDB,
 	}
-	controllerHome := controller.Home{
+	controllerUser := controller.User{
 		Logger:   logger,
-		PostRepo: postRepo,
+		UserRepo: user,
 	}
-	controllerNotFound := _wireControllerNotFoundValue
+	post := &repo.Post{
+		Db: gormDB,
+	}
+	controllerPost := controller.Post{
+		Logger: logger,
+		Repo:   post,
+	}
+	notFound := _wireNotFoundValue
 	middlewarePanic := panic2.ProvideMiddlewarePanic(logger)
-	v := provider.ProvideNextLayers(controllerHome, controllerNotFound, middlewarePanic)
+	v := provider.ProvideNextLayers(home, controllerUser, controllerPost, notFound, middlewarePanic)
 	microApp := provider.ProvideNextApp(v)
 	return microApp, nil
 }
 
 var (
-	_wireControllerNotFoundValue = controller.NotFound{
+	_wireNotFoundValue = controller.NotFound{
 		Payload: []byte(`{"error": "not found"}`),
 	}
 )
@@ -60,6 +72,15 @@ func InjectLogger() *zerolog.Logger {
 }
 
 // wire.go:
+
+var repoSet = wire.NewSet(wire.Struct(new(repo.Post), "Db"), wire.Struct(new(repo.User), "Db"))
+
+var controllerSet = wire.NewSet(wire.Value(controller.NotFound{
+	Payload: []byte(`{"error": "not found"}`),
+}), wire.Struct(new(controller.Home), "*"), wire.Struct(new(controller.User), "*"), wire.Struct(new(controller.Post), "*"),
+)
+
+var middlewareSet = wire.NewSet(middleware.ProvideMiddlewarePanic)
 
 func InjectApiLogger() *zerolog.Logger {
 	logger := provider.ProvideZeroLogger().
