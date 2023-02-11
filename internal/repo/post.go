@@ -1,16 +1,17 @@
 package repo
 
 import (
-	"github.com/alexpts/edu-go/internal/model"
 	"gorm.io/gorm"
+
+	"github.com/alexpts/edu-go/internal/model"
 )
 
 type Post struct {
 	Db *gorm.DB
 }
 
-func (repo *Post) FindOneById(id int, relations ...string) (*model.Post, error) {
-	post := &model.Post{}
+func (repo *Post) FindOneById(id int, relations ...string) (*model.PostRel, error) {
+	post := &model.PostRel{}
 	tx := repo.withRelations(relations).Take(post, id)
 
 	if tx.Error != nil {

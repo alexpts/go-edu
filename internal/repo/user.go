@@ -1,16 +1,17 @@
 package repo
 
 import (
-	"github.com/alexpts/edu-go/internal/model"
 	"gorm.io/gorm"
+
+	"github.com/alexpts/edu-go/internal/model"
 )
 
 type User struct {
 	Db *gorm.DB
 }
 
-func (repo *User) FindOneById(id int, relations ...string) (*model.User, error) {
-	m := &model.User{}
+func (repo *User) FindOneById(id int, relations ...string) (*model.Profile, error) {
+	m := &model.Profile{}
 	tx := repo.withRelations(relations).Take(m, id)
 
 	if tx.Error != nil {
@@ -23,8 +24,8 @@ func (repo *User) FindOneById(id int, relations ...string) (*model.User, error) 
 	return m, nil
 }
 
-func (repo *User) FindAll(relations ...string) ([]model.User, error) {
-	var models []model.User
+func (repo *User) FindAll(relations ...string) ([]model.Profile, error) {
+	var models []model.Profile
 	tx := repo.withRelations(relations).Find(&models)
 
 	if tx.Error != nil {

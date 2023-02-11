@@ -11,11 +11,14 @@ type Post struct {
 	CreatedAt time.Time `gorm:"->" json:"CreAt"`
 	UpdatedAt time.Time `json:"UpAt"` //`gorm:"autoCreateTime:false"`
 	UserId    uint
-
-	// Rel
-	User User
 }
 
 func (m *Post) TableName() string {
 	return `posts`
+}
+
+type PostRel struct {
+	Post
+	// Rel
+	User User
 }
