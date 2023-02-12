@@ -7,6 +7,9 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	"github.com/alexpts/edu-go/internal/model"
+	"github.com/alexpts/edu-go/internal/repo"
 )
 
 func ProvideDbConnect(config *Config) (*sql.DB, error) {
@@ -40,4 +43,18 @@ func configPool(gormDB *gorm.DB) {
 	sqlDB.SetMaxIdleConns(20)
 	sqlDB.SetMaxOpenConns(200)
 	sqlDB.SetConnMaxLifetime(5 * time.Minute)
+}
+
+func ProvideUserRepo(db *gorm.DB) *repo.User {
+	r := &repo.User{}
+	r.Db = db
+	return r
+}
+
+func ProvidePostRepo(db *gorm.DB) *repo.Post {
+	return &repo.Post{
+		Repo: repo.Repo[model.Post]{
+			Db: db,
+		},
+	}
 }

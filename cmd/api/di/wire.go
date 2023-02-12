@@ -13,18 +13,20 @@ import (
 	"github.com/alexpts/edu-go/internal/controller"
 	"github.com/alexpts/edu-go/internal/middleware"
 	"github.com/alexpts/edu-go/internal/provider"
-	"github.com/alexpts/edu-go/internal/repo"
 	"github.com/alexpts/edu-go/pkg/convert"
 )
 
 var repoSet = wire.NewSet(
-	wire.Struct(new(repo.Post), "Db"),
-	wire.Struct(new(repo.User), "Db"),
+	provider.ProvideUserRepo,
+	provider.ProvidePostRepo,
+	// @todo is possible to declare repo via wire.Struct?
+	// wire.Struct(new(repo.Post), "*"),
+	// wire.Struct(new(repo.User), "*"),
 )
 
 var controllerSet = wire.NewSet(
 	wire.Value(controller.NotFound{
-		Payload: []byte(`{"error": "not found"}`),
+		Payload: []byte(`{"error": "not found handler"}`),
 	}),
 	wire.Struct(new(controller.RestController), "*"),
 	wire.Struct(new(controller.Home), "*"),

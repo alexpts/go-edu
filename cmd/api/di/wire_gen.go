@@ -11,7 +11,6 @@ import (
 	"github.com/alexpts/edu-go/internal/middleware"
 	panic2 "github.com/alexpts/edu-go/internal/middleware/panic"
 	"github.com/alexpts/edu-go/internal/provider"
-	"github.com/alexpts/edu-go/internal/repo"
 	"github.com/alexpts/go-next/next"
 	"github.com/google/wire"
 	"github.com/rs/zerolog"
@@ -26,9 +25,9 @@ func InjectHttpServer(handler fasthttp.RequestHandler) fasthttp.Server {
 }
 
 func InjectApp() (next.MicroApp, error) {
-	stdMarshaler := provider.ProvideStdEncodingJsonMarshaler()
+	api := provider.ProvideFastestSonicJsonMarshaler()
 	restController := controller.RestController{
-		Json: stdMarshaler,
+		Json: api,
 	}
 	logger := provider.ProvideZeroLogger()
 	home := controller.Home{
@@ -44,17 +43,13 @@ func InjectApp() (next.MicroApp, error) {
 	if err != nil {
 		return next.MicroApp{}, err
 	}
-	user := &repo.User{
-		Db: gormDB,
-	}
+	user := provider.ProvideUserRepo(gormDB)
 	controllerUser := controller.User{
 		RestController: restController,
 		Logger:         logger,
 		UserRepo:       user,
 	}
-	post := &repo.Post{
-		Db: gormDB,
-	}
+	post := provider.ProvidePostRepo(gormDB)
 	controllerPost := controller.Post{
 		RestController: restController,
 		Logger:         logger,
@@ -69,7 +64,7 @@ func InjectApp() (next.MicroApp, error) {
 
 var (
 	_wireNotFoundValue = controller.NotFound{
-		Payload: []byte(`{"error": "not found"}`),
+		Payload: []byte(`{"error": "not found handler"}`),
 	}
 )
 
@@ -80,10 +75,10 @@ func InjectLogger() *zerolog.Logger {
 
 // wire.go:
 
-var repoSet = wire.NewSet(wire.Struct(new(repo.Post), "Db"), wire.Struct(new(repo.User), "Db"))
+var repoSet = wire.NewSet(provider.ProvideUserRepo, provider.ProvidePostRepo)
 
 var controllerSet = wire.NewSet(wire.Value(controller.NotFound{
-	Payload: []byte(`{"error": "not found"}`),
+	Payload: []byte(`{"error": "not found handler"}`),
 }), wire.Struct(new(controller.RestController), "*"), wire.Struct(new(controller.Home), "*"), wire.Struct(new(controller.User), "*"), wire.Struct(new(controller.Post), "*"),
 )
 

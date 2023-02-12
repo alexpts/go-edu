@@ -22,7 +22,10 @@ func (c *RestController) sendJsonModel(ctx *layer.HandlerCtx, model any) {
 		return
 	}
 
-	respBytes, err := c.Json.Marshal(model)
+	respBytes, err := c.Json.Marshal(map[string]any{
+		// "status": ctx.Response.StatusCode(),
+		"data": model,
+	})
 	if err != nil {
 		panic(err)
 	}

@@ -1,58 +1,21 @@
 package repo
 
-import (
-	"gorm.io/gorm"
+import "github.com/alexpts/edu-go/internal/model"
 
-	"github.com/alexpts/edu-go/internal/model"
-)
+// type User = Repo[model.Profile] - cant` extend
+// type User Repo[model.Profile] - cant` extend
 
+// User - extend general repo via embed Repo and custom methods
 type User struct {
-	Db *gorm.DB
+	Repo[model.User]
 }
 
-func (repo *User) FindOneById(id int, relations ...string) (*model.Profile, error) {
-	m := &model.Profile{}
-	tx := repo.withRelations(relations).Take(m, id)
+func (repo *User) FindOneUserByName(name string) (*model.User, error) {
+	m := &model.User{}
 
-	if tx.Error != nil {
-		return nil, tx.Error
-	}
-	if tx.RowsAffected == 0 {
-		return nil, nil
-	}
+	tx := repo.Db.
+		Where(model.User{Name: name}).
+		Take(m)
 
-	return m, nil
-}
-
-func (repo *User) FindAll(relations ...string) ([]model.Profile, error) {
-	var models []model.Profile
-	tx := repo.withRelations(relations).Find(&models)
-
-	if tx.Error != nil {
-		return nil, tx.Error
-	}
-
-	return models, nil
-}
-
-func (repo *User) withRelations(relations []string) *gorm.DB {
-	tx := repo.Db
-
-	for _, relName := range relations {
-		tx = repo.Db.Preload(relName)
-	}
-
-	return tx
-}
-
-// @todo generic for any type and move to base repository
-func (repo *User) prepareOneResult(tx *gorm.DB, model *any) (*any, error) {
-	if tx.Error != nil {
-		return nil, tx.Error
-	}
-	if tx.RowsAffected == 0 {
-		return nil, nil
-	}
-
-	return model, nil
+	return repo.resultOne(tx, m)
 }

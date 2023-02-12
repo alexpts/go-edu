@@ -1,9 +1,10 @@
 package provider
 
 import (
+	"github.com/alexpts/go-next/next/layer"
+
 	"github.com/alexpts/edu-go/internal/controller"
 	"github.com/alexpts/edu-go/internal/middleware"
-	"github.com/alexpts/go-next/next/layer"
 )
 
 // m - multi handler wrapper for decomposition
@@ -28,6 +29,11 @@ func ProvideNextLayers(
 			Name:     `user-by-id`,
 			Path:     `/users/{id:\d+}/`,
 			Handlers: m(user.ActionGet),
+		},
+		{
+			Name:     `user-by-name`,
+			Path:     `/users/{name:[a-z][a-z0-9]*}/`,
+			Handlers: m(user.ActionGetByName),
 		},
 		{
 			Name:     `users`,

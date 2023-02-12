@@ -15,12 +15,17 @@ type User struct {
 }
 
 func (c *User) ActionGet(ctx *layer.HandlerCtx) {
-	userId := ctx.UriParams["id"]
-	model, _ := c.UserRepo.FindOneById(convert.MustInt(userId), AllRelation)
+	userId := convert.MustInt(ctx.UriParams["id"])
+	model, _ := c.UserRepo.FindOneById(userId, AllRelation)
 	c.sendJsonModel(ctx, model)
 }
 
 func (c *User) ActionFind(ctx *layer.HandlerCtx) {
 	model, _ := c.UserRepo.FindAll(AllRelation)
+	c.sendJsonModel(ctx, model)
+}
+
+func (c *User) ActionGetByName(ctx *layer.HandlerCtx) {
+	model, _ := c.UserRepo.FindOneUserByName(ctx.UriParams["name"])
 	c.sendJsonModel(ctx, model)
 }
