@@ -26,6 +26,7 @@ func (c *User) ActionFind(ctx *layer.HandlerCtx) {
 }
 
 func (c *User) ActionGetByName(ctx *layer.HandlerCtx) {
-	model, _ := c.UserRepo.FindOneUserByName(ctx.UriParams["name"])
+	//model, _ := c.UserRepo.FindOneUserByName(ctx.UriParams["name"])
+	model, _ := c.UserRepo.FindByNameRawSQL(ctx.UriParams["name"])
 	c.sendJsonModel(ctx, model)
 }
