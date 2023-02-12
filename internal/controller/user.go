@@ -9,6 +9,7 @@ import (
 )
 
 type User struct {
+	RestController
 	Logger   *zerolog.Logger
 	UserRepo *repo.User
 }
@@ -16,10 +17,10 @@ type User struct {
 func (c *User) ActionGet(ctx *layer.HandlerCtx) {
 	userId := ctx.UriParams["id"]
 	model, _ := c.UserRepo.FindOneById(convert.MustInt(userId), AllRelation)
-	sendJsonModel(ctx, model)
+	c.sendJsonModel(ctx, model)
 }
 
 func (c *User) ActionFind(ctx *layer.HandlerCtx) {
 	model, _ := c.UserRepo.FindAll(AllRelation)
-	sendJsonModel(ctx, model)
+	c.sendJsonModel(ctx, model)
 }

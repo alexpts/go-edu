@@ -6,11 +6,12 @@ import (
 )
 
 type Home struct {
+	RestController
 	Logger *zerolog.Logger
 }
 
 func (c *Home) ActionPost(ctx *layer.HandlerCtx) {
-	sendJsonModel(ctx, map[string]any{
+	c.sendJsonModel(ctx, map[string]any{
 		"message": "main page",
 	})
 }
