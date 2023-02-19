@@ -2,6 +2,7 @@ package repo
 
 import (
 	"errors"
+	"gorm.io/gorm/clause"
 
 	"gorm.io/gorm"
 )
@@ -9,6 +10,21 @@ import (
 // Repo - @todo add constraint T ~struct
 type Repo[T any] struct {
 	Db *gorm.DB
+}
+
+func (repo *Repo[T]) Create(model *T) (*T, int64, error) {
+	result := repo.Db.Omit(clause.Associations).Create(model)
+	return model, result.RowsAffected, result.Error
+}
+
+func (repo *Repo[T]) Update(model *T) (*T, int64, error) {
+	result := repo.Db.Omit(clause.Associations).Select("*").Updates(*model) // Select(*) update all fields, without zero-value skipped
+	return model, result.RowsAffected, result.Error
+}
+
+func (repo *Repo[T]) Persist(model *T) (*T, int64, error) {
+	tx := repo.Db.Debug().Omit(clause.Associations).Save(model)
+	return model, tx.RowsAffected, tx.Error
 }
 
 func (repo *Repo[T]) FindAll(relations ...string) ([]T, error) {

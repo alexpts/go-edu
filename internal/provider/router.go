@@ -21,13 +21,13 @@ func ProvideNextLayers(
 ) []layer.Layer {
 	return []layer.Layer{
 		{
-			Name:     `main-page`,
 			Path:     `/`,
 			Handlers: m(home.ActionPost),
 		},
 		{
 			Name:     `user-by-id`,
 			Path:     `/users/{id:\d+}/`,
+			Methods:  []string{`GET`},
 			Handlers: m(user.ActionGet),
 		},
 		{
@@ -36,9 +36,22 @@ func ProvideNextLayers(
 			Handlers: m(user.ActionGetByName),
 		},
 		{
-			Name:     `users`,
+			Name:     `get users`,
 			Path:     `/users/`,
+			Methods:  []string{`GET`},
 			Handlers: m(user.ActionFind),
+		},
+		{
+			Name:     `create user`,
+			Path:     `/users/`,
+			Methods:  []string{`POST`},
+			Handlers: m(user.ActionCreate),
+		},
+		{
+			Name:     `update user`,
+			Path:     `/users/{id:\d+}/`,
+			Methods:  []string{`PUT`},
+			Handlers: m(user.ActionUpdate),
 		},
 		{
 			Name:     `post-by-id`,
@@ -51,14 +64,13 @@ func ProvideNextLayers(
 			Handlers: m(post.ActionFind),
 		},
 		{
-			Name:     `panic-to-response`,
 			Handlers: m(panicMiddleware.Middleware),
 			Priority: 1000,
 		},
 		{
 			Name:     `otherwise`,
 			Handlers: m(notFoundController.Action404),
-			Priority: -100,
+			Priority: -1000,
 		},
 	}
 }

@@ -3,6 +3,7 @@ package provider
 import (
 	"database/sql"
 	"fmt"
+	"github.com/rs/zerolog"
 	"time"
 
 	"gorm.io/driver/postgres"
@@ -26,12 +27,14 @@ func ProvideDbConnect(config *Config) (*sql.DB, error) {
 	return sql.Open("pgx", dsn)
 }
 
-func ProvideGormDb(connection *sql.DB) (*gorm.DB, error) {
+func ProvideGormDb(connection *sql.DB, logger *zerolog.Logger) (*gorm.DB, error) {
 	gormDB, err := gorm.Open(postgres.New(postgres.Config{
 		Conn: connection,
-	}), &gorm.Config{})
+	}), &gorm.Config{
+		//Logger: logger, // @todo need adapter https://github.com/moul/zapgorm2/blob/master/zapgorm2.go
+	})
 
-	//gormDB.AutoMigrate(&model.User{}, &model.Post{})
+	gormDB.AutoMigrate(&model.User{}, &model.Post{})
 	configPool(gormDB)
 
 	return gormDB, err

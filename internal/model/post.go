@@ -1,16 +1,11 @@
 package model
 
-import (
-	"time"
-)
-
 type Post struct {
-	Id        uint   `gorm:"primaryKey"`
-	Title     string `gorm:"type:varchar(255)"`
-	Status    uint32
-	CreatedAt time.Time `gorm:"->" json:"CreAt"`
-	UpdatedAt time.Time `json:"UpAt"` //`gorm:"autoCreateTime:false"`
-	UserId    uint
+	Model
+
+	Title  string `gorm:"type:varchar(255)"`
+	Status uint32
+	UserId uint
 }
 
 func (m *Post) TableName() string {

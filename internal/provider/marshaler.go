@@ -18,6 +18,6 @@ func ProvideFastestSonicJsonMarshaler() sonic.API {
 	return sonic.ConfigFastest
 }
 
-func ProvideStdEncodingJsonMarshaler() *convert.StdMarshaler {
-	return &convert.StdMarshaler{}
+func ProvideStdEncodingJsonMarshaler() *convert.StdJsonMarshaler {
+	return &convert.StdJsonMarshaler{}
 }

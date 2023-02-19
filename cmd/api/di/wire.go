@@ -60,7 +60,7 @@ func InjectApp() (next.MicroApp, error) {
 		marshalerSet,
 
 		// bind interface (left) to implementation (right)
-		//wire.Bind(new(convert.IJsonMarshaler), new(*convert.StdMarshaler)),
+		//wire.Bind(new(convert.IJsonMarshaler), new(*convert.StdJsonMarshaler)),
 		wire.Bind(new(convert.IJsonMarshaler), new(sonic.API)), // without ref because sonic.API is interface type
 
 		// other

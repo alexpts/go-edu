@@ -1,9 +1,11 @@
 package model
 
 type User struct {
-	Id   uint   `gorm:"primaryKey"`
+	Model
+	Id   uint   `gorm:"primaryKey; ->; <-:create;"`
 	Name string `gorm:"type:varchar(50)"`
 
+	// Relations
 	Posts []Post `gorm:"foreignKey:UserId"`
 }
 

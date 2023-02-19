@@ -22,14 +22,28 @@ func (c *RestController) sendJsonModel(ctx *layer.HandlerCtx, model any) {
 		return
 	}
 
-	respBytes, err := c.Json.Marshal(map[string]any{
-		// "status": ctx.Response.StatusCode(),
+	respBytes := c.mustJsonMap(map[string]any{
 		"data": model,
 	})
+
+	ctx.Response.SetStatusCode(200)
+	ctx.Response.AppendBody(respBytes)
+}
+
+func (c *RestController) sendError(ctx *layer.HandlerCtx, err error, statusCode int) {
+	bytes := c.mustJsonMap(map[string]any{
+		"error": err.Error(),
+	})
+
+	ctx.Response.SetStatusCode(statusCode)
+	ctx.Response.AppendBody(bytes)
+}
+
+func (c *RestController) mustJsonMap(data map[string]any) []byte {
+	bytes, err := c.Json.Marshal(data)
 	if err != nil {
 		panic(err)
 	}
 
-	ctx.Response.SetStatusCode(200)
-	ctx.Response.AppendBody(respBytes)
+	return bytes
 }
