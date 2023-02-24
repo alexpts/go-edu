@@ -19,7 +19,9 @@ import (
 var repoSet = wire.NewSet(
 	provider.ProvideUserRepo,
 	provider.ProvidePostRepo,
-	// @todo is possible to declare repo via wire.Struct?
+	provider.ProvideCategoryRepo,
+
+	// @todo is possible to declare repo via wire.Struct or auto add for all via glob?
 	// wire.Struct(new(repo.Post), "*"),
 	// wire.Struct(new(repo.User), "*"),
 )
@@ -32,6 +34,7 @@ var controllerSet = wire.NewSet(
 	wire.Struct(new(controller.Home), "*"),
 	wire.Struct(new(controller.User), "*"),
 	wire.Struct(new(controller.Post), "*"),
+	wire.Struct(new(controller.Category), "*"),
 )
 
 var middlewareSet = wire.NewSet(

@@ -53,7 +53,7 @@ func (c *User) ActionCreate(ctx *layer.HandlerCtx) {
 
 func (c *User) ActionUpdate(ctx *layer.HandlerCtx) {
 	userId := convert.MustInt(ctx.UriParams["id"])
-	model, _ := c.UserRepo.FindOneById(userId, AllRelation)
+	model, _ := c.UserRepo.FindOneById(userId)
 
 	err := c.Json.Unmarshal(ctx.Request.Body(), model)
 	if err != nil {
@@ -61,8 +61,8 @@ func (c *User) ActionUpdate(ctx *layer.HandlerCtx) {
 		return
 	}
 
-	//model, _, err = c.UserRepo.Update(model)
-	model, _, err = c.UserRepo.Persist(model)
+	//model, _, err = c.UserRepo.Persist(model) // Create new if not found by model (id + ver)
+	model, _, err = c.UserRepo.Update(model)
 	if err != nil {
 		c.sendError(ctx, err, 400)
 		return

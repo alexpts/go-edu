@@ -16,6 +16,7 @@ func ProvideNextLayers(
 	home controller.Home,
 	user controller.User,
 	post controller.Post,
+	category controller.Category,
 	notFoundController controller.NotFound,
 	panicMiddleware middleware.PanicMiddleware,
 ) []layer.Layer {
@@ -62,6 +63,21 @@ func ProvideNextLayers(
 			Name:     `posts`,
 			Path:     `/posts/`,
 			Handlers: m(post.ActionFind),
+		},
+		{
+			Name:     `create category`,
+			Path:     `/cats/`,
+			Methods:  []string{`POST`},
+			Handlers: m(category.ActionCreate),
+		},
+		{
+			Name:     `get category by id`,
+			Path:     `/cats/{id}/`, // uuid
+			Methods:  []string{`GET`},
+			Handlers: m(category.ActionGet),
+			Restrictions: map[string]string{
+				`id`: `[-a-f0-9]{36}`,
+			},
 		},
 		{
 			Handlers: m(panicMiddleware.Middleware),

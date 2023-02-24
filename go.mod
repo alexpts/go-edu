@@ -1,6 +1,6 @@
 module github.com/alexpts/edu-go
 
-go 1.19
+go 1.20
 
 require github.com/google/wire v0.5.1-0.20220620021424-0675cdc9191c // main branch
 
@@ -8,11 +8,13 @@ require (
 	github.com/Masterminds/squirrel v1.5.3
 	github.com/alexpts/go-next v0.0.0-20230205194722-cd00165c55b6
 	github.com/bytedance/sonic v1.7.1
+	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
 	github.com/rs/zerolog v1.29.0
 	github.com/spf13/viper v1.15.0
 	github.com/valyala/fasthttp v1.44.0
 	gorm.io/driver/postgres v1.4.6
 	gorm.io/gorm v1.24.5
+	gorm.io/plugin/optimisticlock v1.1.0
 )
 
 require (

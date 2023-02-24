@@ -34,7 +34,7 @@ func ProvideGormDb(connection *sql.DB, logger *zerolog.Logger) (*gorm.DB, error)
 		//Logger: logger, // @todo need adapter https://github.com/moul/zapgorm2/blob/master/zapgorm2.go
 	})
 
-	gormDB.AutoMigrate(&model.User{}, &model.Post{})
+	// _ := gormDB.AutoMigrate(&model.User{}, &model.Post{}, &model.Category{})
 	configPool(gormDB)
 
 	return gormDB, err
@@ -57,6 +57,14 @@ func ProvideUserRepo(db *gorm.DB) *repo.User {
 func ProvidePostRepo(db *gorm.DB) *repo.Post {
 	return &repo.Post{
 		Repo: repo.Repo[model.Post]{
+			Db: db,
+		},
+	}
+}
+
+func ProvideCategoryRepo(db *gorm.DB) *repo.Category {
+	return &repo.Category{
+		Repo: repo.Repo[model.Category]{
 			Db: db,
 		},
 	}

@@ -55,9 +55,15 @@ func InjectApp() (next.MicroApp, error) {
 		Logger:         logger,
 		Repo:           post,
 	}
+	category := provider.ProvideCategoryRepo(gormDB)
+	controllerCategory := controller.Category{
+		RestController: restController,
+		Logger:         logger,
+		Repo:           category,
+	}
 	notFound := _wireNotFoundValue
 	middlewarePanic := panic2.ProvideMiddlewarePanic(logger)
-	v := provider.ProvideNextLayers(home, controllerUser, controllerPost, notFound, middlewarePanic)
+	v := provider.ProvideNextLayers(home, controllerUser, controllerPost, controllerCategory, notFound, middlewarePanic)
 	microApp := provider.ProvideNextApp(v)
 	return microApp, nil
 }
@@ -75,11 +81,11 @@ func InjectLogger() *zerolog.Logger {
 
 // wire.go:
 
-var repoSet = wire.NewSet(provider.ProvideUserRepo, provider.ProvidePostRepo)
+var repoSet = wire.NewSet(provider.ProvideUserRepo, provider.ProvidePostRepo, provider.ProvideCategoryRepo)
 
 var controllerSet = wire.NewSet(wire.Value(controller.NotFound{
 	Payload: []byte(`{"error": "not found handler"}`),
-}), wire.Struct(new(controller.RestController), "*"), wire.Struct(new(controller.Home), "*"), wire.Struct(new(controller.User), "*"), wire.Struct(new(controller.Post), "*"),
+}), wire.Struct(new(controller.RestController), "*"), wire.Struct(new(controller.Home), "*"), wire.Struct(new(controller.User), "*"), wire.Struct(new(controller.Post), "*"), wire.Struct(new(controller.Category), "*"),
 )
 
 var middlewareSet = wire.NewSet(middleware.ProvideMiddlewarePanic)

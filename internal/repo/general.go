@@ -22,6 +22,7 @@ func (repo *Repo[T]) Update(model *T) (*T, int64, error) {
 	return model, result.RowsAffected, result.Error
 }
 
+// Persist - Update or Save if not exist
 func (repo *Repo[T]) Persist(model *T) (*T, int64, error) {
 	tx := repo.Db.Debug().Omit(clause.Associations).Save(model)
 	return model, tx.RowsAffected, tx.Error
@@ -46,7 +47,7 @@ func (repo *Repo[T]) withRelations(relations []string) *gorm.DB {
 		tx = repo.Db.Preload(relName)
 	}
 
-	return tx
+	return tx.Debug()
 }
 
 func (repo *Repo[T]) resultMany(models []T, err error) ([]T, error) {

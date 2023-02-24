@@ -2,19 +2,19 @@ package model
 
 type User struct {
 	Model
-	Id   uint   `gorm:"primaryKey; ->; <-:create;"`
-	Name string `gorm:"type:varchar(50)"`
+	VersionMixin
 
-	// Relations
+	Name  string `gorm:"type:varchar(50)"`
 	Posts []Post `gorm:"foreignKey:UserId"`
 }
 
+// TableName all child (embed)
 func (m *User) TableName() string {
 	return `users`
 }
 
-type Profile struct {
-	User
-	// Rel
-	Posts []Post `gorm:"foreignKey:UserId"`
-}
+//type Profile struct {
+//	User
+//	// Relations
+//	Posts []Post `gorm:"foreignKey:UserId"`
+//}
