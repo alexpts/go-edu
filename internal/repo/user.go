@@ -6,8 +6,13 @@ import (
 	"github.com/alexpts/edu-go/internal/model"
 )
 
-// type User = Repo[model.Profile] - cant` extend
-// type User Repo[model.Profile] - cant` extend
+//go:generate mockery --name=IUserRepo --structname=IUserRepoMock
+type IUserRepo interface {
+	IRepo[model.User]
+
+	FindOneUserByName(name string) (*model.User, error)
+	FindByNameRawSQL(name string) (*model.User, error)
+}
 
 // User - extend general repo via embed Repo and custom methods
 type User struct {

@@ -1,0 +1,31 @@
+run:
+  skip-dirs:
+    - .docker
+    - docs
+
+linters:
+  #ignore-test: true
+  enable-all: true
+  disable:
+    - lll
+    - wsl
+    - paralleltest
+    - varnamelen
+    - nlreturn
+    - scopelint
+    - exhaustivestruct
+    - maligned
+    - golint
+    - varcheck
+    - interfacer
+    - structcheck
+    - deadcode
+    - nosnakecase
+    - ifshort
+    - goerr113
+    - exhaustruct
+    - depguard
+    - revive
+    - stylecheck
+    - gci
+    - forbidigo

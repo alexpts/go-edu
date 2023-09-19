@@ -1,8 +1,9 @@
 package model
 
 import (
-	"gorm.io/plugin/optimisticlock"
 	"time"
+
+	"gorm.io/plugin/optimisticlock"
 )
 
 type Model struct {

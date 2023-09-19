@@ -16,11 +16,11 @@ type Post struct {
 
 func (c *Post) ActionGet(ctx *layer.HandlerCtx) {
 	userId := ctx.UriParams["id"]
-	model, _ := c.Repo.FindOneById(convert.MustInt(userId), AllRelation)
+	model, _ := c.Repo.FindOneById(ctx, convert.MustInt(userId), AllRelation)
 	c.sendJsonModel(ctx, model)
 }
 
 func (c *Post) ActionFind(ctx *layer.HandlerCtx) {
-	models, _ := c.Repo.FindAll(AllRelation)
+	models, _ := c.Repo.FindAll(ctx, AllRelation)
 	c.sendJsonModel(ctx, models)
 }

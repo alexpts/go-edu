@@ -3,8 +3,9 @@ package provider
 import (
 	"database/sql"
 	"fmt"
-	"github.com/rs/zerolog"
 	"time"
+
+	"github.com/rs/zerolog"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -34,7 +35,7 @@ func ProvideGormDb(connection *sql.DB, logger *zerolog.Logger) (*gorm.DB, error)
 		//Logger: logger, // @todo need adapter https://github.com/moul/zapgorm2/blob/master/zapgorm2.go
 	})
 
-	// _ := gormDB.AutoMigrate(&model.User{}, &model.Post{}, &model.Category{})
+	_ = gormDB.AutoMigrate(&model.User{}, &model.Post{}, &model.Category{})
 	configPool(gormDB)
 
 	return gormDB, err

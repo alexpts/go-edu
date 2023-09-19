@@ -1,40 +1,50 @@
 package repo
 
 import (
+	"context"
 	"errors"
+
 	"gorm.io/gorm/clause"
 
 	"gorm.io/gorm"
 )
+
+type IRepo[T any] interface {
+	Create(ctx context.Context, model *T) (*T, int64, error)
+	Update(ctx context.Context, model *T) (*T, int64, error)
+	Persist(ctx context.Context, model *T) (*T, int64, error)
+	FindOneById(ctx context.Context, id int, relations ...string) (*T, error)
+	FindAll(ctx context.Context, relations ...string) ([]T, error)
+}
 
 // Repo - @todo add constraint T ~struct
 type Repo[T any] struct {
 	Db *gorm.DB
 }
 
-func (repo *Repo[T]) Create(model *T) (*T, int64, error) {
+func (repo *Repo[T]) Create(ctx context.Context, model *T) (*T, int64, error) {
 	result := repo.Db.Omit(clause.Associations).Create(model)
 	return model, result.RowsAffected, result.Error
 }
 
-func (repo *Repo[T]) Update(model *T) (*T, int64, error) {
+func (repo *Repo[T]) Update(ctx context.Context, model *T) (*T, int64, error) {
 	result := repo.Db.Omit(clause.Associations).Select("*").Updates(*model) // Select(*) update all fields, without zero-value skipped
 	return model, result.RowsAffected, result.Error
 }
 
 // Persist - Update or Save if not exist
-func (repo *Repo[T]) Persist(model *T) (*T, int64, error) {
+func (repo *Repo[T]) Persist(ctx context.Context, model *T) (*T, int64, error) {
 	tx := repo.Db.Debug().Omit(clause.Associations).Save(model)
 	return model, tx.RowsAffected, tx.Error
 }
 
-func (repo *Repo[T]) FindAll(relations ...string) ([]T, error) {
+func (repo *Repo[T]) FindAll(ctx context.Context, relations ...string) ([]T, error) {
 	var models []T
 	tx := repo.withRelations(relations).Find(&models)
 	return repo.resultMany(models, tx.Error)
 }
 
-func (repo *Repo[T]) FindOneById(id int, relations ...string) (*T, error) {
+func (repo *Repo[T]) FindOneById(ctx context.Context, id int, relations ...string) (*T, error) {
 	model := new(T)
 	tx := repo.withRelations(relations).Take(model, id)
 	return repo.resultOne(tx, model)

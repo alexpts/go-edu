@@ -1,6 +1,9 @@
 package controller
 
 import (
+	"net/http"
+	"reflect"
+
 	"github.com/alexpts/go-next/next/layer"
 	"gorm.io/gorm/clause"
 
@@ -16,8 +19,8 @@ const AllRelation = clause.Associations
 func (c *RestController) sendJsonModel(ctx *layer.HandlerCtx, model any) {
 	ctx.Response.Header.Add("content-type", "application/json")
 
-	if model == nil {
-		ctx.Response.SetStatusCode(404)
+	if model == nil || reflect.TypeOf(model) == nil || reflect.ValueOf(model).IsNil() {
+		ctx.Response.SetStatusCode(http.StatusNotFound)
 		ctx.Response.AppendBodyString(`{"error": "not found""}`)
 		return
 	}
@@ -26,7 +29,7 @@ func (c *RestController) sendJsonModel(ctx *layer.HandlerCtx, model any) {
 		"data": model,
 	})
 
-	ctx.Response.SetStatusCode(200)
+	ctx.Response.SetStatusCode(http.StatusOK)
 	ctx.Response.AppendBody(respBytes)
 }
 
