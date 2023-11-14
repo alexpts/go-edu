@@ -3,6 +3,8 @@ package main
 import (
 	"github.com/spf13/viper"
 
+	_ "go.uber.org/automaxprocs"
+
 	"github.com/alexpts/edu-go/cmd/api/di"
 )
 
