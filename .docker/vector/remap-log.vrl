@@ -1,4 +1,5 @@
 # https://vector.dev/docs/reference/vrl/
+# https://playground.vrl.dev/
 
 json = object!(parse_json!(.message, 2)) # парсим json лог в переменную, в глубину на 2 уровня только
 del(.message) # удаляем поле с json строкой сырой
