@@ -1,5 +1,5 @@
 module github.com/alexpts/edu-go/examples
 
-go 1.22
+go 1.24
 
-require golang.org/x/sync v0.7.0
+require golang.org/x/sync v0.11.0

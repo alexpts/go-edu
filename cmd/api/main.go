@@ -1,3 +1,5 @@
+//go:generate go tool github.com/google/wire/cmd/wire ./...
+
 package main
 
 import (

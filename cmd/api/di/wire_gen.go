@@ -34,8 +34,8 @@ func InjectApp() (next.MicroApp, error) {
 		RestController: restController,
 		Logger:         logger,
 	}
-	viper := provider.ProvideConfig()
-	db, err := provider.ProvideDbConnect(viper)
+	v := provider.ProvideConfig()
+	db, err := provider.ProvideDbConnect(v)
 	if err != nil {
 		return next.MicroApp{}, err
 	}
@@ -62,9 +62,9 @@ func InjectApp() (next.MicroApp, error) {
 		Repo:           category,
 	}
 	notFound := _wireNotFoundValue
-	middlewarePanic := panic2.ProvideMiddlewarePanic(logger)
-	v := provider.ProvideNextLayers(home, controllerUser, controllerPost, controllerCategory, notFound, middlewarePanic)
-	microApp := provider.ProvideNextApp(v)
+	v2 := panic2.ProvideMiddlewarePanic(logger)
+	v3 := provider.ProvideNextLayers(home, controllerUser, controllerPost, controllerCategory, notFound, v2)
+	microApp := provider.ProvideNextApp(v3)
 	return microApp, nil
 }
 
