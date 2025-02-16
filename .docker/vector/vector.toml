@@ -37,16 +37,13 @@ log_schema.source_type_key = "src"
   #endpoints = "${ES_HOST}"  # указывается с протоколом и портом
   endpoints = ["http://elasticsearch:9200"]
   compression = "gzip"
-  #auth.strategy = "basic"
-  #auth.password = "${ES_PASS}"
-  #auth.user = "${ES_LOGIN}"
   batch.timeout_secs = 5
   encoding.except_fields = ["_vector._es_index", "_vector.host"]
 
 [sinks.console]
   type = "console" # required
   inputs =  [
-    #"udp_socket",
+    "udp_socket",
     "json_parser",
     "json_parser.dropped" # reroute from {{ name }}.dropped
   ]

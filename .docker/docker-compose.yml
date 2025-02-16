@@ -14,13 +14,13 @@ services:
       TZ: Europe/Moscow
 
   vector:
-    image: timberio/vector:0.33.X-alpine
+    image: timberio/vector:0.38.X-alpine
     mem_limit: 64m
     restart: always
     depends_on:
       - elasticsearch
     volumes:
-      - ./vector/vector.toml:/etc/vector/vector.toml:ro
+      - ./vector/vector.yaml:/etc/vector/vector.yaml:ro
       - ./vector/remap-log.vrl:/etc/vector/remap-log.vrl:ro
     ports: [ '127.0.0.1:12201:12201/udp' ]
 
