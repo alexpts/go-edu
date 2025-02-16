@@ -2,10 +2,12 @@ package provider
 
 import (
 	"fmt"
-	"github.com/alexpts/edu-go/pkg/zerolog/transport"
+	"os"
+
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/pkgerrors"
-	"os"
+
+	"github.com/alexpts/edu-go/pkg/zerolog/transport"
 )
 
 var MicroSec = "2006-01-02T15:04:05.999999Z07:00"
@@ -33,6 +35,8 @@ func (h zeroLogLevelHook) Run(e *zerolog.Event, level zerolog.Level, msg string)
 		value = 2
 	case zerolog.PanicLevel:
 		value = 0
+	default:
+		return
 	}
 
 	e.Int("sl_level", value)
