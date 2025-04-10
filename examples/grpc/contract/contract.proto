@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package api;
+
+option go_package = "github.com/alexpts/edu-go/examples/grpc/contract";
+
+service A {
+  rpc GetUser (UserReq) returns (UserResponse) {}
+}
+
+message UserReq {
+  int64 id = 1;
+}
+
+message UserResponse {
+  int64 id = 1;
+  string name = 2;
+  string lastname = 3;
+  uint32 age = 4;
+}
