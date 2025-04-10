@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"strconv"
 	"sync"
 	"time"
 
@@ -34,7 +35,7 @@ func main() {
 			defer m.Unlock()
 
 			if i > 3 {
-				joinErrors = errors.Join(joinErrors, errors.New("some error"))
+				joinErrors = errors.Join(joinErrors, errors.New("some error "+strconv.Itoa(i)))
 			}
 
 			return joinErrors
