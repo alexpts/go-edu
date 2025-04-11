@@ -2,7 +2,7 @@
 
 
 ### Tools
-cd tools && go generate --tags=tools
+Работа с tools изменилась в go 1.24 - https://habr.com/ru/companies/otus/articles/881708/
 
 ### Wire
-`./bin/wire ./...`
+`go tool github.com/google/wire/cmd/wire ./...`
