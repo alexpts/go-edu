@@ -70,7 +70,7 @@ func (repo *Repo[T]) resultMany(models []T, err error) ([]T, error) {
 
 func (repo *Repo[T]) resultOne(tx *gorm.DB, model *T) (*T, error) {
 	if tx.Error != nil {
-		if errors.As(tx.Error, &gorm.ErrRecordNotFound) {
+		if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
 		return nil, tx.Error
