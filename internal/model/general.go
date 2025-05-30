@@ -8,7 +8,7 @@ import (
 
 type Model struct {
 	Id    uint      `gorm:"primaryKey; ->; <-:create"`
-	CreAt time.Time `gorm:"->;<-:create; autoUpdateTime:milli; not null"`
+	CreAt time.Time `gorm:"->;<-:create; autoCreateTime:milli; not null"`
 	UpAt  time.Time `gorm:"autoUpdateTime:milli"`
 }
 
